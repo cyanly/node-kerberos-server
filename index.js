@@ -2,7 +2,7 @@ var http = require('http');
 var kerberos_proxy = require('./kerberos_proxy');
 var freeport = require('freeport');
 
-exports.createServer = function (options, callback) {
+exports.createServer = function (options, callback, callbackAfter) {
   if (!isNaN(options)) {
     options = {
       port: options
@@ -21,7 +21,9 @@ exports.createServer = function (options, callback) {
     kerberos_proxy.start(opts);
 
     //this could be https
-    http.createServer(callback)
-        .listen(node_port);
+    var server = http.createServer(callback)
+                     .listen(node_port);
+    if (callbackAfter)
+      callbackAfter(null, server);
   });
 };
